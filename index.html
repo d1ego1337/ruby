@@ -3,70 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruby Spoofer Recoded</title>
+    <title>Ruby Spoofer - Официальный сайт</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
+
         body {
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #2c1e4a, #000000);
-            background-size: 200% 200%;
-            animation: gradientAnimation 10s ease infinite;
+            background: linear-gradient(45deg, #1a0023, #0d0047, #1a0023, #000000);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            overflow: hidden;
         }
 
         @keyframes gradientAnimation {
             0% { background-position: 0% 0%; }
+            25% { background-position: 100% 0%; }
             50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
             100% { background-position: 0% 0%; }
         }
 
         .container {
             text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 50px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
             color: #ffffff;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            max-width: 800px;
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
         }
 
         h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5em;
+            margin-bottom: 25px;
             color: #ff00ff;
-            text-shadow: 0 0 10px #ff00ff;
+            text-shadow: 0 0 15px #ff00ff, 0 0 5px #ff00ff;
+            letter-spacing: 2px;
         }
 
         p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.6;
+            font-size: 1.3em;
+            margin-bottom: 35px;
+            line-height: 1.7;
+            font-weight: 300;
+            color: #e0e0e0;
         }
 
         .buttons {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             justify-content: center;
+            margin-bottom: 30px;
         }
 
         .btn {
-            padding: 15px 30px;
-            font-size: 1.1em;
+            padding: 18px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.4s ease;
             text-decoration: none;
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
 
         .btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.5);
         }
 
         .btn-download {
@@ -77,31 +117,54 @@
             background: linear-gradient(45deg, #ff5555, #ff00ff);
         }
 
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            display: none;
+            animation: fadeInOut 3s ease;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
         .updates {
             margin-top: 40px;
-            font-size: 1em;
-            line-height: 1.5;
-            text-align: center; /* Выравнивание текста по центру */
+            font-size: 1.1em;
+            line-height: 1.6;
+            text-align: center;
         }
 
         .updates h2 {
+            font-family: 'Orbitron', sans-serif;
             color: #ff00ff;
-            text-shadow: 0 0 5px #ff00ff;
+            text-shadow: 0 0 8px #ff00ff;
+            margin-bottom: 15px;
         }
 
         .updates ul {
             list-style-type: none;
             padding: 0;
-            text-align: center; /* Выравнивание списка по центру */
+            text-align: center;
             margin: 0 auto;
             max-width: 600px;
-            display: table; /* Используем table для центрирования элементов */
+            display: table;
         }
 
         .updates li {
-            margin: 10px 0;
-            display: table-row; /* Каждый элемент списка как строка таблицы */
-            text-align: center; /* Текст внутри li выравнивается по центру */
+            margin: 12px 0;
+            display: table-row;
+            text-align: center;
+            color: #d0d0d0;
         }
     </style>
 </head>
@@ -109,10 +172,10 @@
     <div class="container">
         <h1>Ruby Spoofer</h1>
         <p>
-            Ruby Spoofer - это мощный инструмент для изменения аппаратных и системных данных на Windows. Он позволяет спуфить такие параметры, как серийные номера дисков, GUID, MAC-адреса, данные BIOS и многое другое. Идеально подходит для защиты конфиденциальности и обхода блокировок, связанных с аппаратным идентификатором. Доступна Premium-версия с расширенными функциями и поддержкой!
+            Ruby Spoofer - это передовой инструмент для изменения аппаратных и системных данных на Windows. Он позволяет спуфить серийные номера дисков, GUID, MAC-адреса, данные BIOS и многое другое. Идеально подходит для защиты конфиденциальности и обхода ограничений, связанных с идентификаторами оборудования. Откройте доступ к Premium-версии с расширенными возможностями!
         </p>
         <div class="buttons">
-            <a href="https://drive.google.com/file/d/1v2RcAe0ogIj-AVXo57EHHa2D7f9WNfk7/view?usp=sharing" class="btn btn-download" target="_blank">Скачать Ruby Spoofer</a>
+            <a href="https://drive.usercontent.google.com/download?id=1v2RcAe0ogIj-AVXo57EHHa2D7f9WNfk7&export=download&authuser=0" class="btn btn-download" target="_blank" onclick="showNotification()">Скачать Ruby Spoofer</a>
             <a href="#" class="btn btn-buy" onclick="alert('Функция покупки скоро будет доступна!'); return false;">Купить Ruby Spoofer</a>
         </div>
         <div class="updates">
@@ -127,5 +190,16 @@
             </ul>
         </div>
     </div>
+    <div id="notification" class="notification">Загрузка началась, подождите 5-10 секунд.</div>
+
+    <script>
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 6000);
+        }
+    </script>
 </body>
 </html>
