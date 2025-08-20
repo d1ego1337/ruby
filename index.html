@@ -1,204 +1,422 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+            
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+               
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruby Spoofer - Официальный сайт</title>
+    <title>Ruby Spoofer Recoded</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
-
         body {
             margin: 0;
-            padding: 0;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+            background: linear-gradient(45deg, #1a1a1a, #ff6200);
+            background-size: 200% 200%;
             min-height: 100vh;
-            font-family: 'Roboto', sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            background: linear-gradient(45deg, #1a0023, #0d0047, #1a0023, #000000);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
-            overflow: hidden;
+            scroll-behavior: smooth;
         }
 
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 0%; }
-            25% { background-position: 100% 0%; }
-            50% { background-position: 100% 100%; }
-            75% { background-position: 0% 100%; }
-            100% { background-position: 0% 0%; }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(50px);
+            z-index: -1;
         }
 
         .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 50px;
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            color: #ffffff;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
-            border: 1px solid rgba(255, 0, 255, 0.2);
-            max-width: 800px;
-            transition: transform 0.3s ease;
         }
 
-        .container:hover {
-            transform: scale(1.02);
+        header {
+            padding: 20px 0;
         }
 
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5em;
-            margin-bottom: 25px;
-            color: #ff00ff;
-            text-shadow: 0 0 15px #ff00ff, 0 0 5px #ff00ff;
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ff6200;
+        }
+
+        .hero {
+            padding: 60px 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 0 0 20px;
+            text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        p {
-            font-size: 1.3em;
-            margin-bottom: 35px;
-            line-height: 1.7;
-            font-weight: 300;
-            color: #e0e0e0;
+        .hero p {
+            font-size: 1.2rem;
+            margin: 0 0 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .buttons {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .btn {
-            padding: 18px 40px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.4s ease;
+        .buttons a {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px;
+            background: #ff6200;
+            color: #fff;
             text-decoration: none;
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background 0.3s;
         }
 
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .buttons a:hover {
+            background: #e05500;
         }
 
-        .btn:hover::after {
-            width: 300px;
-            height: 300px;
+        .features {
+            padding: 60px 0;
         }
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 0, 255, 0.5);
+        .features h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
         }
 
-        .btn-download {
-            background: linear-gradient(45deg, #ff00ff, #8a00e6);
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px;
         }
 
-        .btn-buy {
-            background: linear-gradient(45deg, #ff5555, #ff00ff);
-        }
-
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 15px 25px;
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
             border-radius: 10px;
-            font-size: 1.1em;
-            display: none;
-            animation: fadeInOut 3s ease;
+            backdrop-filter: blur(10px);
+            text-align: left;
         }
 
-        @keyframes fadeInOut {
-            0% { opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { opacity: 0; }
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: #ddd;
         }
 
         .updates {
-            margin-top: 40px;
-            font-size: 1.1em;
-            line-height: 1.6;
-            text-align: center;
-        }
-
-        .updates h2 {
-            font-family: 'Orbitron', sans-serif;
-            color: #ff00ff;
-            text-shadow: 0 0 8px #ff00ff;
-            margin-bottom: 15px;
-        }
-
-        .updates ul {
-            list-style-type: none;
-            padding: 0;
-            text-align: center;
+            max-width: 800px;
             margin: 0 auto;
-            max-width: 600px;
-            display: table;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
         }
 
-        .updates li {
-            margin: 12px 0;
-            display: table-row;
+        .updates h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .updates p {
+            font-size: 1rem;
+            color: #ddd;
+            margin: 5px 0;
+        }
+
+        .screenshots {
+            padding: 60px 0;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .screenshots h2 {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .screenshot-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-item:hover {
+            transform: scale(1.05);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        footer {
+            padding: 40px 0;
             text-align: center;
-            color: #d0d0d0;
+        }
+
+        footer a {
+            color: #ff6200;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 1rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer p {
+            margin: 20px 0;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        .notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff6200;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <header>
+        <nav>
+            <a href="#screenshots">Скриншоты</a>
+            <a href="#updates">Обновления</a>
+            <a href="https://discord.gg/btJn66hAuM">Discord</a>
+            <a href="https://t.me/rubyrecode">Telegram</a>
+        </nav>
+    </header>
+
     <div class="container">
-        <h1>Ruby Spoofer</h1>
-        <p>
-            Ruby Spoofer - это передовой инструмент для изменения аппаратных и системных данных на Windows. Он позволяет спуфить серийные номера дисков, GUID, MAC-адреса, данные BIOS и многое другое. Идеально подходит для защиты конфиденциальности и обхода ограничений, связанных с идентификаторами оборудования. Откройте доступ к Premium-версии с расширенными возможностями!
-        </p>
-        <div class="buttons">
-            <a href="https://drive.usercontent.google.com/download?id=1VJv_KtycfneWepKxLVrOeTMl77NUgqJp&export=download&authuser=0" class="btn btn-download" target="_blank" onclick="showNotification()">Скачать Ruby Spoofer</a>
-            <a href="#" class="btn btn-buy" onclick="alert('Функция покупки скоро будет доступна!'); return false;">Купить Ruby Spoofer</a>
+        <section class="hero">
+            <h1>Ищете ЛУЧШИЙ СПУФЕР?</h1>
+            <p>Ruby Spoofer Recoded - это лучшее решение для комфортной игры. Продолжайте играть на любимом сервере без блокировок.</p>
+            <div class="buttons">
+                <a href="https://drive.usercontent.google.com/download?id=1VJv_KtycfneWepKxLVrOeTMl77NUgqJp&export=download&authuser=0" onclick="showNotification(event)">Скачать</a>
+                <a href="https://up-game.pro">Купить</a>
+                <a href="https://discord.gg/btJn66hAuM">Поддержка</a>
+            </div>
+        </section>
+
+        <section class="features" id="updates">
+            <h2>Наши Плюсы</h2>
+            <div class="feature-grid">
+                <div class="feature">
+                    <h3>Безопасность</h3>
+                    <p>Нашим главным приоритетом является безопасность аккаунтов наших пользователей. Мы делаем все возможное, чтобы обезопасить вас от блокировок.</p>
+                </div>
+                <div class="feature">
+                    <h3>Поддержка 24/7</h3>
+                    <p>Мы уделяем большое внимание нашим клиентам и обеспечиваем поддержку на нашем в Discord.</p>
+                </div>
+                <div class="feature">
+                    <h3>Мгновенный доступ</h3>
+                    <p>Не тратьте время на регистрацию. Мы максимально упростили покупку, а также добавили вход по ключу. Вам обязательно нужно это проверить!</p>
+                </div>
+                <div class="feature">
+                    <h3>Простота использования</h3>
+                    <p>Процесс установки ПО занимает менее минуты и не требует от пользователя никаких действий. Весь процесс полностью автоматизирован.</p>
+                </div>
+                <div class="feature">
+                    <h3>Быстрые обновления</h3>
+                    <p>Все наши читы обновляются когда это нужно. Мы ежедневно работаем над улучшением качества нашего спуфера.</p>
+                </div>
+                <div class="feature">
+                    <h3>Доступные цены</h3>
+                    <p>Мы постоянно предоставляем пониженные цены / скидки для наших клиентов. Мы также предоставляем розыгрыши в Discord канале и промокоды на скидку.</p>
+                </div>
+            </div>
+            <div class="updates" id="updates">
+                <h3>Последние обновления</h3>
+                <p>Версия: 1.3</p>
+                <p>[+] Заменили Дата первого входа на Дата активации ключа в Profile</p>
+                <p>[+] Улучшена работа Cleaner & Presets</p>
+                <p>[+] Изменили работу спуфинга CPU & GPU</p>
+                <p>[+] Обновили Presets под CPU & GPU</p>
+            </div>
+        </section>
+
+        <section class="screenshots" id="screenshots">
+            <h2>Скриншоты</h2>
+            <div class="screenshot-grid">
+                <div class="screenshot-item" onclick="openModal('https://i.imgur.com/08eratW.png')">
+                    <img src="https://i.imgur.com/08eratW.png" alt="Скрин 1">
+                </div>
+                <div class="screenshot-item" onclick="openModal('https://i.imgur.com/Z3Lur8o.png')">
+                    <img src="https://i.imgur.com/Z3Lur8o.png" alt="Скрин 2">
+                </div>
+                <div class="screenshot-item" onclick="openModal('https://i.imgur.com/9XTOcNW.png')">
+                    <img src="https://i.imgur.com/9XTOcNW.png" alt="Скрин 3">
+                </div>
+                <div class="screenshot-item" onclick="openModal('https://i.imgur.com/4Z8U7wW.png')">
+                    <img src="https://i.imgur.com/4Z8U7wW.png" alt="Скрин 4">
+                </div>
+            </div>
+        </section>
+
+        <div class="modal" id="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="modal-content">
+                <img id="modal-image" src="" alt="Увеличенное изображение">
+            </div>
         </div>
-        <div class="updates">
-            <h2>Последние обновления</h2>
-            <p>Последнее обновление: // 18.08.2025 : 12:32</p>
-                          <p>Версия: 1.3</p>
-            <ul>
-                <li>[+] Заменили Дата первого входа на Дата активации ключа в Profile</li>
-                <li>[+] Улучшена работа Cleaner & Presets</li>
-                <li>[+] Изменили работу спуфинга CPU & GPU</li>
-                <li>[+] Обновлили Presets под CPU & GPU</li>
-            </ul>
-        </div>
+
+        <div class="notification" id="downloadNotification">Загрузка началась...</div>
+
+        <footer>
+            <div>
+                <h4>Навигация:</h4>
+                <a href="#screenshots">Скриншоты</a>
+                <a href="#updates">Обновления</a>
+                <a href="https://discord.gg/btJn66hAuM">Дискорд</a>
+                <a href="https://t.me/rubyrecode">Телеграм</a>
+            </div>
+            <div>
+            </div>
+            <p>Copyright © 2025 RUBY SPOOFER RECODED. Все права защищены. Все прочие марки, скриншоты, логотипы и авторские права являются собственностью соответствующих владельцев.</p>
+        </footer>
     </div>
-    <div id="notification" class="notification">Загрузка началась, подождите 5-10 секунд.</div>
 
     <script>
-        function showNotification() {
-            const notification = document.getElementById('notification');
+        function openModal(imageUrl) {
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            modal.style.display = 'flex';
+            modalImage.src = imageUrl;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function showNotification(event) {
+            event.preventDefault();
+            const notification = document.getElementById('downloadNotification');
             notification.style.display = 'block';
             setTimeout(() => {
                 notification.style.display = 'none';
-            }, 6000);
+                window.location.href = event.target.href;
+            }, 2000);
         }
     </script>
 </body>
