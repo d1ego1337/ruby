@@ -12,22 +12,22 @@
                 var firstSheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[firstSheetName];
 
-                
+                // Convert sheet to JSON to filter blank rows
                 var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
                 var filteredData = jsonData.filter(row => row.some(filledCell));
 
-                
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
                 var headerRowIndex = filteredData.findIndex((row, index) =>
                   row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
                 );
-            
+                // Fallback
                 if (headerRowIndex === -1 || headerRowIndex > 25) {
                   headerRowIndex = 0;
                 }
 
-               
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
                 csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
                 return csv;
             } catch (e) {
@@ -43,19 +43,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruby Spoofer Recoded</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: #fff;
-            background: linear-gradient(45deg, #1a1a1a, #ff6200);
-            background-size: 200% 200%;
+            background: linear-gradient(45deg, #000000, #ff6200, #000000, #000000);
+            background-size: 300% 300%;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             scroll-behavior: smooth;
+            animation: gradient 10s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body::before {
@@ -85,13 +92,14 @@
             color: #fff;
             text-decoration: none;
             margin: 0 15px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            transition: color 0.3s;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         nav a:hover {
             color: #ff6200;
+            transform: scale(1.1);
         }
 
         .hero {
@@ -99,15 +107,15 @@
         }
 
         .hero h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             margin: 0 0 20px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             margin: 0 0 30px;
             max-width: 600px;
             margin-left: auto;
@@ -116,18 +124,20 @@
 
         .buttons a {
             display: inline-block;
-            padding: 12px 24px;
+            padding: 14px 28px;
             margin: 10px;
             background: #ff6200;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
             font-weight: 600;
-            transition: background 0.3s;
+            font-size: 1.1rem;
+            transition: background 0.3s ease, transform 0.3s ease;
         }
 
         .buttons a:hover {
             background: #e05500;
+            transform: scale(1.05);
         }
 
         .features {
@@ -135,7 +145,8 @@
         }
 
         .features h2 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 700;
             margin-bottom: 40px;
         }
 
@@ -156,12 +167,13 @@
         }
 
         .feature h3 {
-            font-size: 1.5rem;
+            font-size: 1.7rem;
+            font-weight: 600;
             margin-bottom: 10px;
         }
 
         .feature p {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ddd;
         }
 
@@ -176,12 +188,13 @@
         }
 
         .updates h3 {
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 600;
             margin-bottom: 20px;
         }
 
         .updates p {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #ddd;
             margin: 5px 0;
         }
@@ -193,7 +206,8 @@
         }
 
         .screenshots h2 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
+            font-weight: 700;
             margin-bottom: 40px;
         }
 
@@ -208,7 +222,7 @@
             border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
         .screenshot-item img {
@@ -262,16 +276,19 @@
             color: #ff6200;
             text-decoration: none;
             margin: 0 10px;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         footer a:hover {
-            text-decoration: underline;
+            color: #fff;
+            transform: scale(1.1);
         }
 
         footer p {
             margin: 20px 0;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #ccc;
         }
 
@@ -290,6 +307,43 @@
     </style>
 </head>
 <body>
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+            
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
     <header>
         <nav>
             <a href="#screenshots">Скриншоты</a>
@@ -310,7 +364,7 @@
             </div>
         </section>
 
-        <section class="features" id="updates">
+        <section class="features" id="features">
             <h2>Наши Плюсы</h2>
             <div class="feature-grid">
                 <div class="feature">
@@ -345,7 +399,7 @@
                 <p>[+] Cleaner выходит из beta-версии, он работает исправно</p>
                 <p>[+] Фиксанули "error to connect server #4"</p>
                 <p>[+] Убрали мат.плату из System Info</p>
-                <p>[+] Обновили все способы спуфингаo</p>
+                <p>[+] Обновили все способы спуфинга</p>
                 <p>[+] Обновили Presets под обнову спуфинга</p>
                 <p>[+] Спец. фикс под Majestic RP</p>
             </div>
