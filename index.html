@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -133,6 +94,7 @@
             font-weight: 600;
             font-size: 1.1rem;
             transition: background 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
         }
 
         .buttons a:hover {
@@ -235,7 +197,7 @@
             transform: scale(1.05);
         }
 
-        .modal {
+        .modal, #purchaseModal {
             display: none;
             position: fixed;
             top: 0;
@@ -248,14 +210,43 @@
             z-index: 1000;
         }
 
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
+        .modal-content, .purchase-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid rgba(255, 98, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 98, 0, 0.2);
         }
 
-        .modal-content img {
-            max-width: 100%;
-            max-height: 100%;
+        .purchase-content h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .purchase-option {
+            display: block;
+            margin: 15px 0;
+            padding: 14px;
+            background: #ff6200;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .purchase-option:hover {
+            background: #e05500;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 98, 0, 0.4);
         }
 
         .close {
@@ -344,6 +335,7 @@
         return gk_fileData[filename] || "";
         }
     </script>
+
     <header>
         <nav>
             <a href="#screenshots">Скриншоты</a>
@@ -359,7 +351,7 @@
             <p>Ruby Spoofer Recoded - это лучшее решение для комфортной игры. Продолжайте играть на любимом сервере без блокировок.</p>
             <div class="buttons">
                 <a href="https://drive.usercontent.google.com/download?id=14VKQZrKn3MDuMwFDKMcUtmnQp7IoPOFj&export=download&authuser=0" onclick="showNotification(event)">Скачать</a>
-                <a href="https://up-game.pro/product/ruby-spoofer/">Купить</a>
+                <a onclick="openPurchaseModal()">Купить</a>
                 <a href="https://discord.gg/btJn66hAuM">Поддержка</a>
             </div>
         </section>
@@ -395,7 +387,6 @@
             <div class="updates" id="updates">
                 <h3>Последние обновления</h3>
                 <p>Версия: 1.4.4</p>
-                <p>
                 <p>--- Добавлено / Изменено ---</p>
                 <p>[+] Теперь спуф по имени процессора и видеокарты работает</p>
                 <p>[+] Создаётся 2 файла в папке AppHostVerifer для примения имён CPU + GPU</p>
@@ -424,10 +415,21 @@
             </div>
         </section>
 
+        <!-- Модальное окно для скриншотов -->
         <div class="modal" id="modal">
             <span class="close" onclick="closeModal()">&times;</span>
             <div class="modal-content">
                 <img id="modal-image" src="" alt="Увеличенное изображение">
+            </div>
+        </div>
+
+        <!-- Модальное окно для выбора магазина -->
+        <div class="modal" id="purchaseModal">
+            <div class="purchase-content">
+                <h3>Выберите сайт для покупки</h3>
+                <a class="purchase-option" href="https://up-game.pro/product/ruby-spoofer/" target="_blank">1) UP-GAME.PRO</a>
+                <a class="purchase-option" href="https://dragon-hack.pro/product/ruby-spoofer/" target="_blank">2) DRAGON-HACK.PRO</a>
+                <span class="close" onclick="closePurchaseModal()" style="margin-top: 20px; display: inline-block; font-size: 1.5rem;">&times;</span>
             </div>
         </div>
 
@@ -441,13 +443,12 @@
                 <a href="https://discord.gg/btJn66hAuM">Дискорд</a>
                 <a href="https://t.me/ruby_spoofer">Телеграм</a>
             </div>
-            <div>
-            </div>
             <p>Copyright © 2025 RUBY SPOOFER RECODED. Все права защищены. Все прочие марки, скриншоты, логотипы и авторские права являются собственностью соответствующих владельцев.</p>
         </footer>
     </div>
 
     <script>
+        // Модальное окно скриншотов
         function openModal(imageUrl) {
             const modal = document.getElementById('modal');
             const modalImage = document.getElementById('modal-image');
@@ -460,13 +461,28 @@
             modal.style.display = 'none';
         }
 
+        // Модальное окно покупки
+        function openPurchaseModal() {
+            document.getElementById('purchaseModal').style.display = 'flex';
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('purchaseModal').style.display = 'none';
+        }
+
+        // Закрытие по клику вне контента
         window.onclick = function(event) {
             const modal = document.getElementById('modal');
+            const purchaseModal = document.getElementById('purchaseModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
+            if (event.target === purchaseModal) {
+                purchaseModal.style.display = 'none';
+            }
         }
 
+        // Уведомление о скачивании
         function showNotification(event) {
             event.preventDefault();
             const notification = document.getElementById('downloadNotification');
